@@ -17,5 +17,11 @@ export default createApp({
         import('@vitejs/plugin-react').then(m => m.default()),
       ],
     },
+    {
+      name: 'api',
+      type: 'http',
+      handler: './server/api.ts',
+      base: '/api',
+    },
   ],
 });
