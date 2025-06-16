@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import Sidebar from './components/Sidebar';
-import Editor from './components/Editor';
-import { Document, User } from './types';
-import { documents, users } from './data/data';
+import { useState, useEffect } from "react";
+import Sidebar from "./components/Sidebar";
+import Editor from "./components/Editor";
+import { Document, User } from "./types";
+import { documents, users } from "./data/data";
 
 function App() {
   const [currentUser] = useState<User>(users[0]);
-  const [selectedDocument, setSelectedDocument] = useState<Document | null>(null);
+  const [selectedDocument, setSelectedDocument] = useState<Document | null>(
+    null,
+  );
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   useEffect(() => {
@@ -25,9 +27,11 @@ function App() {
         onToggle={() => setSidebarOpen(!sidebarOpen)}
         currentUser={currentUser}
       />
-      <main className={`flex-1 transition-all duration-300 ${
-        sidebarOpen ? 'ml-64' : 'ml-0'
-      }`}>
+      <main
+        className={`flex-1 transition-all duration-300 ${
+          sidebarOpen ? "ml-64" : "ml-0"
+        }`}
+      >
         {selectedDocument ? (
           <Editor
             document={selectedDocument}

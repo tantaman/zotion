@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { Menu, Share, MoreHorizontal, Star } from 'lucide-react';
-import { Document } from '../types';
-import {MilkdownEditor} from './MilkdownEditor';
+import React, { useEffect, useState } from "react";
+import { Menu, Share, MoreHorizontal, Star } from "lucide-react";
+import { Document } from "../types";
+import { MilkdownEditor } from "./MilkdownEditor";
 
 interface EditorProps {
   document: Document;
@@ -26,7 +26,7 @@ const Editor: React.FC<EditorProps> = ({
   const handleContentChange = (newContent: string) => {
     setContent(newContent);
     setIsSaved(false);
-    
+
     // Simulate auto-save
     setTimeout(() => {
       setIsSaved(true);
@@ -36,7 +36,7 @@ const Editor: React.FC<EditorProps> = ({
   const handleTitleChange = (newTitle: string) => {
     setTitle(newTitle);
     setIsSaved(false);
-    
+
     // Simulate auto-save
     setTimeout(() => {
       setIsSaved(true);
@@ -54,16 +54,17 @@ const Editor: React.FC<EditorProps> = ({
           >
             <Menu className="w-5 h-5" />
           </button>
-          
+
           <div className="flex items-center space-x-2">
-            <span className="text-2xl">{document.emoji || '📄'}</span>
+            <span className="text-2xl">{document.emoji || "📄"}</span>
             <div>
               <input
                 type="text"
                 value={title}
                 onChange={(e) => handleTitleChange(e.target.value)}
-                className="text-lg font-semibold bg-transparent border-none outline-none focus:bg-gray-50 px-2 py-1 rounded"
+                className="w-fit text-lg font-semibold bg-transparent border-none outline-none focus:bg-gray-50 px-2 py-1 rounded"
                 placeholder="Untitled"
+                style={{ width: `${title.length}ch` }}
               />
               <div className="flex items-center space-x-2 text-xs text-gray-500 px-2">
                 <span>
@@ -75,9 +76,7 @@ const Editor: React.FC<EditorProps> = ({
                     <span>Saving...</span>
                   </span>
                 )}
-                {isSaved && (
-                  <span className="text-green-600">Saved</span>
-                )}
+                {isSaved && <span className="text-green-600">Saved</span>}
               </div>
             </div>
           </div>
@@ -99,10 +98,7 @@ const Editor: React.FC<EditorProps> = ({
 
       {/* Editor */}
       <div className="flex-1 overflow-hidden">
-        <MilkdownEditor
-          content={content}
-          onChange={handleContentChange}
-        />
+        <MilkdownEditor content={content} />
       </div>
     </div>
   );

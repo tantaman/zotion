@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
-import { 
-  FileText, 
-  Plus, 
-  Search, 
+import React, { useState } from "react";
+import {
+  FileText,
+  Plus,
+  Search,
   Settings,
   ChevronRight,
   ChevronDown,
-  X
-} from 'lucide-react';
-import { Document, User as UserType } from '../types';
+  X,
+} from "lucide-react";
+import { Document, User as UserType } from "../types";
 
 interface SidebarProps {
   documents: Document[];
@@ -27,13 +27,13 @@ const Sidebar: React.FC<SidebarProps> = ({
   onToggle,
   currentUser,
 }) => {
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [expandedSections, setExpandedSections] = useState<Set<string>>(
-    new Set(['documents'])
+    new Set(["documents"]),
   );
 
-  const filteredDocuments = documents.filter(doc =>
-    doc.title.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredDocuments = documents.filter((doc) =>
+    doc.title.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   const toggleSection = (section: string) => {
@@ -50,26 +50,28 @@ const Sidebar: React.FC<SidebarProps> = ({
     <>
       {/* Mobile overlay */}
       {isOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
           onClick={onToggle}
         />
       )}
-      
+
       {/* Sidebar */}
-      <div className={`
+      <div
+        className={`
         fixed left-0 top-0 h-full w-64 bg-notion-gray-50 border-r border-notion-gray-200 
         transform transition-transform duration-300 z-50
-        ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+        ${isOpen ? "translate-x-0" : "-translate-x-full"}
         lg:translate-x-0
-      `}>
+      `}
+      >
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-notion-gray-200">
           <div className="flex items-center space-x-2">
             <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center text-white font-bold text-sm">
-              N
+              Z
             </div>
-            <span className="font-semibold text-gray-900">Workspace</span>
+            <span className="font-semibold text-gray-900">Zero</span>
           </div>
           <button
             onClick={onToggle}
@@ -106,22 +108,19 @@ const Sidebar: React.FC<SidebarProps> = ({
           {/* Documents Section */}
           <div className="mb-4">
             <button
-              onClick={() => toggleSection('documents')}
+              onClick={() => toggleSection("documents")}
               className="w-full flex items-center justify-between px-3 py-2 text-left hover:bg-notion-gray-200 rounded-lg transition-colors"
             >
               <div className="flex items-center space-x-2">
-                {expandedSections.has('documents') ? (
-                  <ChevronDown className="w-4 h-4" />
-                ) : (
-                  <ChevronRight className="w-4 h-4" />
-                )}
                 <FileText className="w-4 h-4" />
                 <span className="text-sm font-medium">Documents</span>
               </div>
-              <span className="text-xs text-gray-500">{filteredDocuments.length}</span>
+              <span className="text-xs text-gray-500">
+                {filteredDocuments.length}
+              </span>
             </button>
 
-            {expandedSections.has('documents') && (
+            {expandedSections.has("documents") && (
               <div className="mt-2 space-y-1">
                 {filteredDocuments.map((doc) => (
                   <button
@@ -129,11 +128,11 @@ const Sidebar: React.FC<SidebarProps> = ({
                     onClick={() => onSelectDocument(doc)}
                     className={`w-full flex items-center space-x-2 px-3 py-2 text-left rounded-lg transition-colors ${
                       selectedDocument?.id === doc.id
-                        ? 'bg-blue-100 text-blue-900'
-                        : 'hover:bg-notion-gray-200 text-gray-700'
+                        ? "bg-blue-100 text-blue-900"
+                        : "hover:bg-notion-gray-200 text-gray-700"
                     }`}
                   >
-                    <span className="text-sm">{doc.emoji || '📄'}</span>
+                    <span className="text-sm pl-3">{doc.emoji || "📄"}</span>
                     <span className="text-sm truncate flex-1">{doc.title}</span>
                   </button>
                 ))}

@@ -4,9 +4,15 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vinxi dev",
+    "dev": "tsx scripts/dev.ts",
+    "dev:db": "tsx scripts/dev-db.ts",
+    "dev:zero": "npx zero-cache-dev",
+    "dev:ui": "tsx scripts/dev-ui.ts",
+    "dev:clean": "tsx scripts/clean.ts",
+    "gen-schema": "drizzle-zero generate -s ./server/db/schema.ts --format -o ./zero/schema.gen.ts",
     "build": "vinxi build",
-    "start": "vinxi start"
+    "start": "vinxi start",
+    "seed": "tsx scripts/seed.ts"
   },
   "dependencies": {
     "@milkdown/core": "^7.3.6",
@@ -14,18 +20,30 @@
     "@milkdown/ctx": "^7.3.6",
     "@milkdown/react": "^7.3.6",
     "@milkdown/theme-nord": "^7.3.6",
+    "@rocicorp/zero": "file:../mono/packages/zero/rocicorp-zero-0.21.2025061100.tgz",
+    "chokidar-cli": "^3.0.0",
     "clsx": "^2.0.0",
+    "concurrently": "^9.1.2",
+    "dotenv": "^16.5.0",
+    "dotenv-expand": "^12.0.2",
+    "drizzle-orm": "^0.44.2",
+    "drizzle-zero": "^0.10.8",
     "lucide-react": "^0.263.1",
+    "pg": "^8.16.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "wait-on": "^8.0.3"
   },
   "devDependencies": {
+    "@types/pg": "^8.15.4",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
     "@vitejs/plugin-react": "^4.0.0",
     "autoprefixer": "^10.4.14",
+    "drizzle-kit": "^0.31.1",
     "postcss": "^8.4.24",
     "tailwindcss": "^3.3.0",
+    "tsx": "^4.20.3",
     "typescript": "^5.0.0",
     "vinxi": "^0.3.11"
   }
