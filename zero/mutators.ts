@@ -62,6 +62,9 @@ export const updateDoc = mutator(
 );
 
 // TODO: this will change to surgical updates in the future
+// CUT: it would be ideal to be able to collect a bunch of mutations and apply them in a single
+// transaction on the backend. But we do not have control over transaction
+// boundaries in the current zero-pg sdk.
 export const updateDocBody = mutator(
   'updateDocBody',
   async (
