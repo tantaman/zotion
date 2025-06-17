@@ -1,7 +1,10 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {Menu, Share, MoreHorizontal, Star} from 'lucide-react';
 import {MilkdownEditor} from './MilkdownEditor';
 import {Document} from '../../zero/schema';
+import {useQuery} from '@rocicorp/zero/react';
+import {docBody} from '../../zero/queries';
+import {useCachedProp} from '../hooks/cachedProp';
 
 interface EditorProps {
   document: Document;
@@ -14,14 +17,16 @@ const Editor: React.FC<EditorProps> = ({
   onToggleSidebar,
   sidebarOpen,
 }) => {
-  const [content, setContent] = useState(document.content);
-  const [title, setTitle] = useState(document.title);
-  const [isSaved, setIsSaved] = useState(true);
+  const [body] = useQuery(docBody(document.id));
 
-  useEffect(() => {
-    setContent(document.content);
-    setTitle(document.title);
-  }, [document]);
+  // CUT: Having to save the body off into `useState` is annoying.
+  // We need to somehow sync it from the DB state...
+  // CUT: this filter to keep last state is annoying in order to prevent a flicker.
+  // A cache is also possible but we don't want to keep the query open, just delay removing the current content
+  // until the new content is ready.
+  const [content, setContent] = useCachedProp(body?.content ?? '', v => !!v);
+  const [title, setTitle] = useCachedProp(document.title);
+  const [isSaved, setIsSaved] = useState(true);
 
   const handleContentChange = (newContent: string) => {
     setContent(newContent);
@@ -68,7 +73,8 @@ const Editor: React.FC<EditorProps> = ({
               />
               <div className="flex items-center space-x-2 text-xs text-gray-500 px-2">
                 <span>
-                  Last edited {document.updatedAt.toLocaleDateString()}
+                  Last edited{' '}
+                  {new Date(document.modified ?? 0).toLocaleDateString()}
                 </span>
                 {!isSaved && (
                   <span className="flex items-center space-x-1">
