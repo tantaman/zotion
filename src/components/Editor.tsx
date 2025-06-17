@@ -2,9 +2,10 @@ import React, {useState} from 'react';
 import {Menu, Share, MoreHorizontal, Star} from 'lucide-react';
 import {MilkdownEditor} from './MilkdownEditor';
 import {Document} from '../../zero/schema';
-import {useQuery} from '@rocicorp/zero/react';
+import {useQuery, useZero} from '@rocicorp/zero/react';
 import {docBody} from '../../zero/queries';
 import {useCachedProp} from '../hooks/cachedProp';
+import {updateDoc, updateDocBody} from '../../zero/mutators';
 
 interface EditorProps {
   document: Document;
@@ -17,6 +18,7 @@ const Editor: React.FC<EditorProps> = ({
   onToggleSidebar,
   sidebarOpen,
 }) => {
+  const zero = useZero();
   const [body] = useQuery(docBody(document.id));
 
   // CUT: Having to save the body off into `useState` is annoying.
@@ -24,28 +26,51 @@ const Editor: React.FC<EditorProps> = ({
   // CUT: this filter to keep last state is annoying in order to prevent a flicker.
   // A cache is also possible but we don't want to keep the query open, just delay removing the current content
   // until the new content is ready.
-  const [content, setContent] = useCachedProp(body?.content ?? '', v => !!v);
-  const [title, setTitle] = useCachedProp(document.title);
-  const [isSaved, setIsSaved] = useState(true);
+  const [content, setContent, contentDirty] = useCachedProp(
+    body?.content ?? '',
+    v => !!v,
+  );
+  const [title, setTitle, titleDirty] = useCachedProp(document.title);
+  const isSaved = !contentDirty && !titleDirty;
+  const [contentSaveHandle, setContentSaveHandle] = useState<ReturnType<
+    typeof setTimeout
+  > | null>(null);
+  const [titleSaveHandle, setTitleSaveHandle] = useState<ReturnType<
+    typeof setTimeout
+  > | null>(null);
 
   const handleContentChange = (newContent: string) => {
     setContent(newContent);
-    setIsSaved(false);
 
-    // Simulate auto-save
-    setTimeout(() => {
-      setIsSaved(true);
-    }, 2000);
+    if (contentSaveHandle != null) {
+      clearTimeout(contentSaveHandle);
+    }
+
+    setContentSaveHandle(
+      setTimeout(() => {
+        updateDocBody(zero, {
+          documentId: document.id,
+          content: newContent,
+        });
+      }, 2000),
+    );
   };
 
   const handleTitleChange = (newTitle: string) => {
     setTitle(newTitle);
-    setIsSaved(false);
 
-    // Simulate auto-save
-    setTimeout(() => {
-      setIsSaved(true);
-    }, 2000);
+    if (titleSaveHandle != null) {
+      clearTimeout(titleSaveHandle);
+    }
+
+    setTitleSaveHandle(
+      setTimeout(() => {
+        updateDoc(zero, {
+          id: document.id,
+          title: newTitle,
+        });
+      }, 2000),
+    );
   };
 
   return (
@@ -104,7 +129,16 @@ const Editor: React.FC<EditorProps> = ({
 
       {/* Editor */}
       <div className="flex-1 overflow-hidden">
-        <MilkdownEditor content={content} />
+        {/* CUT: Content set to content from the db so we only refresh the markdown on db content change.
+        This is still ass since it requires re-creating the entire doc on any event coming out of the db.
+        We need a different way to sync collaborative text.
+        1. Local edits are already applied to the document model so we do not need to re-incorporate them
+        2. Remote edits should result in surgical changes
+        */}
+        <MilkdownEditor
+          content={body?.content ?? content}
+          handleContentChange={handleContentChange}
+        />
       </div>
     </div>
   );
