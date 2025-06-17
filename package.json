@@ -21,6 +21,7 @@
     "@milkdown/react": "^7.3.6",
     "@milkdown/theme-nord": "^7.3.6",
     "@rocicorp/zero": "file:../mono/packages/zero/rocicorp-zero-0.21.2025061100.tgz",
+    "articulated": "^1.0.0",
     "chokidar-cli": "^3.0.0",
     "clsx": "^2.0.0",
     "concurrently": "^9.1.2",

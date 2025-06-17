@@ -16,6 +16,17 @@ const db = drizzle(process.env.PG_URL!);
 const client = db.$client;
 
 // CUT: this is annoying. How can we make this easier?
+// CUT: the user should have control over transaction bounds so they can roll many mutations into a single transaction.
+
+/*
+- lookup the mutator and run it?
+
+zero.runMutation(id, mutation, args);
+// ^  will call with the correct stuff
+
+zero.runMutations([id, mutation, args][]);
+*/
+
 class DrizzleConnection implements DBConnection<NodePgClient> {
   async query(query: string, args: unknown[]): Promise<Iterable<Row>> {
     return (await client.query(query, args)).rows;

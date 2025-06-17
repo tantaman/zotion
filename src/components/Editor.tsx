@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {useRef} from 'react';
 import {Menu, Share, MoreHorizontal, Star} from 'lucide-react';
 import {MilkdownEditor} from './MilkdownEditor';
 import {DocId} from '../../zero/schema';
