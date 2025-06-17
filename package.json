@@ -7,6 +7,7 @@
     "dev": "tsx scripts/dev.ts",
     "dev:db": "tsx scripts/dev-db.ts",
     "dev:zero": "npx zero-cache",
+    "dev:yjs": "HOST=localhost PORT=1234 npx y-websocket",
     "dev:ui": "tsx scripts/dev-ui.ts",
     "dev:clean": "tsx scripts/clean.ts",
     "gen-schema": "drizzle-zero generate -s ./server/db/schema.ts --format -o ./zero/schema.gen.ts",
@@ -18,9 +19,11 @@
     "@milkdown/core": "^7.3.6",
     "@milkdown/crepe": "^7.13.1",
     "@milkdown/ctx": "^7.3.6",
+    "@milkdown/plugin-collab": "^7.13.1",
     "@milkdown/react": "^7.3.6",
     "@milkdown/theme-nord": "^7.3.6",
     "@rocicorp/zero": "file:../mono/packages/zero/rocicorp-zero-0.21.2025061100.tgz",
+    "@y/websocket-server": "^0.1.1",
     "chokidar-cli": "^3.0.0",
     "clsx": "^2.0.0",
     "concurrently": "^9.1.2",
@@ -33,7 +36,9 @@
     "pg": "^8.16.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "wait-on": "^8.0.3"
+    "wait-on": "^8.0.3",
+    "y-websocket": "^3.0.0",
+    "yjs": "^13.6.27"
   },
   "devDependencies": {
     "@types/pg": "^8.15.4",

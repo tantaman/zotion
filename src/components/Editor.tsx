@@ -1,16 +1,17 @@
-import React, {useRef, useState} from 'react';
+import React, {useRef} from 'react';
 import {Menu, Share, MoreHorizontal, Star} from 'lucide-react';
 import {MilkdownEditor} from './MilkdownEditor';
-import {DocId} from '../../zero/schema';
+import {DocId, User} from '../../zero/schema';
 import {useQuery, useZero} from '@rocicorp/zero/react';
-import {doc, docBody} from '../../zero/queries';
+import {doc} from '../../zero/queries';
 import {useCachedProp} from '../hooks/cachedProp';
-import {updateDoc, updateDocBody} from '../../zero/mutators';
+import {updateDoc} from '../../zero/mutators';
 
 interface EditorProps {
   documentId: DocId;
   onToggleSidebar: () => void;
   sidebarOpen: boolean;
+  user: User;
 }
 
 const SAVE_INTERVAL = 1000;
@@ -19,44 +20,17 @@ const Editor: React.FC<EditorProps> = ({
   documentId,
   onToggleSidebar,
   sidebarOpen,
+  user,
 }) => {
   const zero = useZero();
-  const [body] = useQuery(docBody(documentId));
   const [document] = useQuery(doc(documentId));
 
-  // CUT: Having to save the body off into `useState` is annoying.
-  // We need to somehow sync it from the DB state...
-  // CUT: this filter to keep last state is annoying in order to prevent a flicker.
-  // A cache is also possible but we don't want to keep the query open, just delay removing the current content
-  // until the new content is ready.
-  // CUT: if the value is truly undefined this trick will not work. E.g., a body not yet created for the doc metadata.
-  const [content, setContent, contentDirty] = useCachedProp(
-    body?.content,
-    v => v !== undefined,
-  );
   const [title, setTitle, titleDirty] = useCachedProp(
     document?.title,
     v => v !== undefined,
   );
-  const isSaved = !contentDirty && !titleDirty;
+  const isSaved = !titleDirty;
   const titleSaveRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const contentSaveRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const handleContentChange = (newContent: string) => {
-    setContent(newContent);
-
-    if (contentSaveRef.current !== null) {
-      clearTimeout(contentSaveRef.current);
-    }
-    const handle = setTimeout(() => {
-      updateDocBody(zero, {
-        documentId: documentId,
-        content: newContent,
-      });
-    }, SAVE_INTERVAL);
-
-    contentSaveRef.current = handle;
-  };
 
   const handleTitleChange = (newTitle: string) => {
     setTitle(newTitle);
@@ -136,10 +110,7 @@ const Editor: React.FC<EditorProps> = ({
         1. Local edits are already applied to the document model so we do not need to re-incorporate them
         2. Remote edits should result in surgical changes
         */}
-        <MilkdownEditor
-          content={body?.content ?? content ?? ''}
-          handleContentChange={handleContentChange}
-        />
+        <MilkdownEditor docId={documentId} user={user} />
       </div>
     </div>
   );
