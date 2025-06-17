@@ -1,10 +1,8 @@
 import {eventHandler, readBody} from 'vinxi/http';
-import {drizzle} from 'drizzle-orm/node-postgres';
 import '../shared/env';
 import {NamedQuery, TransformRequestMessage, ast} from '@rocicorp/zero';
 import * as queries from '../zero/queries';
 import {schema} from '../zero/schema.gen';
-const db = drizzle(process.env.PG_URL!);
 
 export default eventHandler(async event => {
   console.log('Pull request received');
