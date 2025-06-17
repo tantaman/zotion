@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { Menu, Share, MoreHorizontal, Star } from "lucide-react";
-import { Document } from "../types";
-import { MilkdownEditor } from "./MilkdownEditor";
+import React, {useEffect, useState} from 'react';
+import {Menu, Share, MoreHorizontal, Star} from 'lucide-react';
+import {MilkdownEditor} from './MilkdownEditor';
+import {Document} from '../../zero/schema';
 
 interface EditorProps {
   document: Document;
@@ -56,15 +56,15 @@ const Editor: React.FC<EditorProps> = ({
           </button>
 
           <div className="flex items-center space-x-2">
-            <span className="text-2xl">{document.emoji || "📄"}</span>
+            <span className="text-2xl">{document.emoji || '📄'}</span>
             <div>
               <input
                 type="text"
                 value={title}
-                onChange={(e) => handleTitleChange(e.target.value)}
+                onChange={e => handleTitleChange(e.target.value)}
                 className="w-fit text-lg font-semibold bg-transparent border-none outline-none focus:bg-gray-50 px-2 py-1 rounded"
                 placeholder="Untitled"
-                style={{ width: `${title.length}ch` }}
+                style={{width: `${title.length}ch`}}
               />
               <div className="flex items-center space-x-2 text-xs text-gray-500 px-2">
                 <span>

@@ -1,11 +1,13 @@
 import {eventHandler, readBody} from 'vinxi/http';
 import {drizzle} from 'drizzle-orm/node-postgres';
 import '../shared/env';
-import {NamedQuery, TransformRequestMessage} from '@rocicorp/zero';
+import {NamedQuery, TransformRequestMessage, ast} from '@rocicorp/zero';
 import * as queries from '../zero/queries';
+import {schema} from '../zero/schema.gen';
 const db = drizzle(process.env.PG_URL!);
 
 export default eventHandler(async event => {
+  console.log('Pull request received');
   const transformRequest: TransformRequestMessage = await readBody(event);
 
   return [
@@ -19,7 +21,7 @@ export default eventHandler(async event => {
       return {
         id: req.id,
         name: req.name,
-        ast: (queries[name] as NamedQuery<any, any>)(...req.args).ast,
+        ast: ast(schema, (queries[name] as NamedQuery<any, any>)(...req.args)),
       };
     }),
   ];
