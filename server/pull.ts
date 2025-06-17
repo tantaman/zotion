@@ -5,7 +5,6 @@ import * as queries from '../zero/queries';
 import {schema} from '../zero/schema.gen';
 
 export default eventHandler(async event => {
-  console.log('Pull request received');
   const transformRequest: TransformRequestMessage = await readBody(event);
 
   return [

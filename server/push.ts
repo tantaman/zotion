@@ -25,11 +25,13 @@ class DrizzleConnection implements DBConnection<NodePgClient> {
     cb: (tx: DBTransaction<NodePgClient>) => Promise<T>,
   ): Promise<T> {
     try {
-      client.query('BEGIN');
-      return await cb(new DrizzleTransaction(client));
+      await client.query('BEGIN');
+      const ret = await cb(new DrizzleTransaction(client));
+      await client.query('COMMIT');
+      return ret;
     } catch (e) {
-      client.query('ROLLBACK');
-      throw new Error(`Failed to begin transaction: ${e}`);
+      await client.query('ROLLBACK');
+      throw e;
     }
   }
 }
@@ -51,6 +53,7 @@ class DrizzleTransaction implements DBTransaction<NodePgClient> {
 
 const processor = new PushProcessor(
   new ZQLDatabase(new DrizzleConnection(), schema),
+  'debug',
 );
 
 export default eventHandler(async event => {
