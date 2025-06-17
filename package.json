@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "tsx scripts/dev.ts",
     "dev:db": "tsx scripts/dev-db.ts",
-    "dev:zero": "npx zero-cache-dev",
+    "dev:zero": "npx zero-cache",
     "dev:ui": "tsx scripts/dev-ui.ts",
     "dev:clean": "tsx scripts/clean.ts",
     "gen-schema": "drizzle-zero generate -s ./server/db/schema.ts --format -o ./zero/schema.gen.ts",

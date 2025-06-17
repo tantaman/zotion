@@ -1,11 +1,19 @@
-import { useState, useEffect } from "react";
-import Sidebar from "./components/Sidebar";
-import Editor from "./components/Editor";
-import { Document, User } from "./types";
-import { documents, users } from "./data/data";
+import {useState, useEffect} from 'react';
+import Sidebar from './components/Sidebar';
+import Editor from './components/Editor';
+import {useQuery} from '@rocicorp/zero/react';
+import {allDocTitles, user} from '../zero/queries';
+import {Document, UserId, WorkspaceId} from '../zero/schema';
 
-function App() {
-  const [currentUser] = useState<User>(users[0]);
+function App({
+  workspaceId,
+  userId,
+}: {
+  workspaceId: WorkspaceId;
+  userId: UserId;
+}) {
+  const [documents] = useQuery(allDocTitles(workspaceId));
+  const [currentUser] = useQuery(user(userId), userId != null);
   const [selectedDocument, setSelectedDocument] = useState<Document | null>(
     null,
   );
@@ -16,6 +24,10 @@ function App() {
       setSelectedDocument(documents[0]);
     }
   }, []);
+
+  if (!currentUser) {
+    return null;
+  }
 
   return (
     <div className="flex h-screen bg-white">
@@ -29,7 +41,7 @@ function App() {
       />
       <main
         className={`flex-1 transition-all duration-300 ${
-          sidebarOpen ? "ml-64" : "ml-0"
+          sidebarOpen ? 'ml-64' : 'ml-0'
         }`}
       >
         {selectedDocument ? (

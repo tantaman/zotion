@@ -1,14 +1,6 @@
-import React, { useState } from "react";
-import {
-  FileText,
-  Plus,
-  Search,
-  Settings,
-  ChevronRight,
-  ChevronDown,
-  X,
-} from "lucide-react";
-import { Document, User as UserType } from "../types";
+import React, {useState} from 'react';
+import {FileText, Plus, Search, Settings, X} from 'lucide-react';
+import {Document, User as UserType} from '../../zero/schema';
 
 interface SidebarProps {
   documents: Document[];
@@ -27,12 +19,12 @@ const Sidebar: React.FC<SidebarProps> = ({
   onToggle,
   currentUser,
 }) => {
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
   const [expandedSections, setExpandedSections] = useState<Set<string>>(
-    new Set(["documents"]),
+    new Set(['documents']),
   );
 
-  const filteredDocuments = documents.filter((doc) =>
+  const filteredDocuments = documents.filter(doc =>
     doc.title.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
@@ -61,7 +53,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         className={`
         fixed left-0 top-0 h-full w-64 bg-notion-gray-50 border-r border-notion-gray-200 
         transform transition-transform duration-300 z-50
-        ${isOpen ? "translate-x-0" : "-translate-x-full"}
+        ${isOpen ? 'translate-x-0' : '-translate-x-full'}
         lg:translate-x-0
       `}
       >
@@ -89,7 +81,7 @@ const Sidebar: React.FC<SidebarProps> = ({
               type="text"
               placeholder="Search documents..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={e => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-2 bg-white border border-notion-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
@@ -108,7 +100,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           {/* Documents Section */}
           <div className="mb-4">
             <button
-              onClick={() => toggleSection("documents")}
+              onClick={() => toggleSection('documents')}
               className="w-full flex items-center justify-between px-3 py-2 text-left hover:bg-notion-gray-200 rounded-lg transition-colors"
             >
               <div className="flex items-center space-x-2">
@@ -120,19 +112,19 @@ const Sidebar: React.FC<SidebarProps> = ({
               </span>
             </button>
 
-            {expandedSections.has("documents") && (
+            {expandedSections.has('documents') && (
               <div className="mt-2 space-y-1">
-                {filteredDocuments.map((doc) => (
+                {filteredDocuments.map(doc => (
                   <button
                     key={doc.id}
                     onClick={() => onSelectDocument(doc)}
                     className={`w-full flex items-center space-x-2 px-3 py-2 text-left rounded-lg transition-colors ${
                       selectedDocument?.id === doc.id
-                        ? "bg-blue-100 text-blue-900"
-                        : "hover:bg-notion-gray-200 text-gray-700"
+                        ? 'bg-blue-100 text-blue-900'
+                        : 'hover:bg-notion-gray-200 text-gray-700'
                     }`}
                   >
-                    <span className="text-sm pl-3">{doc.emoji || "📄"}</span>
+                    <span className="text-sm pl-3">{doc.emoji || '📄'}</span>
                     <span className="text-sm truncate flex-1">{doc.title}</span>
                   </button>
                 ))}
@@ -145,7 +137,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         <div className="p-4 border-t border-notion-gray-200">
           <div className="flex items-center space-x-3">
             <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-blue-500 rounded-full flex items-center justify-center text-white text-sm">
-              {currentUser.avatar || currentUser.name.charAt(0)}
+              {currentUser.avatarUrl || currentUser.name.charAt(0)}
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-gray-900 truncate">
