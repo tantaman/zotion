@@ -1,9 +1,9 @@
-import {useState, useEffect} from 'react';
+import {useState} from 'react';
 import Sidebar from './components/Sidebar';
 import Editor from './components/Editor';
 import {useQuery} from '@rocicorp/zero/react';
 import {allDocTitles, user} from '../zero/queries';
-import {Document, UserId, WorkspaceId} from '../zero/schema';
+import {DocId, Document, UserId, WorkspaceId} from '../zero/schema';
 
 function App({
   workspaceId,
@@ -14,16 +14,14 @@ function App({
 }) {
   const [documents] = useQuery(allDocTitles(workspaceId));
   const [currentUser] = useQuery(user(userId), userId != null);
-  const [selectedDocument, setSelectedDocument] = useState<Document | null>(
+  // CUT: this is a problem for managing selected document state since the
+  // content of the doc can change. E.g., title changes and this object is wrong.
+  // That will not update the doc saved off into state here.
+  // Instead we save off doc id rather than doc object.
+  const [selectedDocumentId, setSelectedDocumentId] = useState<DocId | null>(
     null,
   );
   const [sidebarOpen, setSidebarOpen] = useState(true);
-
-  useEffect(() => {
-    if (documents.length > 0) {
-      setSelectedDocument(documents[0]);
-    }
-  }, []);
 
   if (!currentUser) {
     return null;
@@ -33,8 +31,8 @@ function App({
     <div className="flex h-screen bg-white">
       <Sidebar
         documents={documents}
-        selectedDocument={selectedDocument}
-        onSelectDocument={setSelectedDocument}
+        selectedDocument={selectedDocumentId}
+        onSelectDocument={setSelectedDocumentId}
         isOpen={sidebarOpen}
         onToggle={() => setSidebarOpen(!sidebarOpen)}
         currentUser={currentUser}
@@ -44,9 +42,9 @@ function App({
           sidebarOpen ? 'ml-64' : 'ml-0'
         }`}
       >
-        {selectedDocument ? (
+        {selectedDocumentId ? (
           <Editor
-            document={selectedDocument}
+            documentId={selectedDocumentId}
             onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
             sidebarOpen={sidebarOpen}
           />

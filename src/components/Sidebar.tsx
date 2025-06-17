@@ -1,11 +1,11 @@
 import React, {useState} from 'react';
 import {FileText, Plus, Search, Settings, X} from 'lucide-react';
-import {Document, User as UserType} from '../../zero/schema';
+import {DocId, Document, User as UserType} from '../../zero/schema';
 
 interface SidebarProps {
   documents: Document[];
-  selectedDocument: Document | null;
-  onSelectDocument: (document: Document) => void;
+  selectedDocument: DocId | null;
+  onSelectDocument: (documentId: DocId) => void;
   isOpen: boolean;
   onToggle: () => void;
   currentUser: UserType;
@@ -117,9 +117,9 @@ const Sidebar: React.FC<SidebarProps> = ({
                 {filteredDocuments.map(doc => (
                   <button
                     key={doc.id}
-                    onClick={() => onSelectDocument(doc)}
+                    onClick={() => onSelectDocument(doc.id)}
                     className={`w-full flex items-center space-x-2 px-3 py-2 text-left rounded-lg transition-colors ${
-                      selectedDocument?.id === doc.id
+                      selectedDocument === doc.id
                         ? 'bg-blue-100 text-blue-900'
                         : 'hover:bg-notion-gray-200 text-gray-700'
                     }`}

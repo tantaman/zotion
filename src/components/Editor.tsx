@@ -1,25 +1,26 @@
 import React, {useState} from 'react';
 import {Menu, Share, MoreHorizontal, Star} from 'lucide-react';
 import {MilkdownEditor} from './MilkdownEditor';
-import {Document} from '../../zero/schema';
+import {DocId} from '../../zero/schema';
 import {useQuery, useZero} from '@rocicorp/zero/react';
-import {docBody} from '../../zero/queries';
+import {doc, docBody} from '../../zero/queries';
 import {useCachedProp} from '../hooks/cachedProp';
 import {updateDoc, updateDocBody} from '../../zero/mutators';
 
 interface EditorProps {
-  document: Document;
+  documentId: DocId;
   onToggleSidebar: () => void;
   sidebarOpen: boolean;
 }
 
 const Editor: React.FC<EditorProps> = ({
-  document,
+  documentId,
   onToggleSidebar,
   sidebarOpen,
 }) => {
   const zero = useZero();
-  const [body] = useQuery(docBody(document.id));
+  const [body] = useQuery(docBody(documentId));
+  const [document] = useQuery(doc(documentId));
 
   // CUT: Having to save the body off into `useState` is annoying.
   // We need to somehow sync it from the DB state...
@@ -30,7 +31,10 @@ const Editor: React.FC<EditorProps> = ({
     body?.content ?? '',
     v => !!v,
   );
-  const [title, setTitle, titleDirty] = useCachedProp(document.title);
+  const [title, setTitle, titleDirty] = useCachedProp(
+    document?.title ?? '',
+    v => !!v,
+  );
   const isSaved = !contentDirty && !titleDirty;
   const [contentSaveHandle, setContentSaveHandle] = useState<ReturnType<
     typeof setTimeout
@@ -49,7 +53,7 @@ const Editor: React.FC<EditorProps> = ({
     setContentSaveHandle(
       setTimeout(() => {
         updateDocBody(zero, {
-          documentId: document.id,
+          documentId: documentId,
           content: newContent,
         });
       }, 2000),
@@ -66,7 +70,7 @@ const Editor: React.FC<EditorProps> = ({
     setTitleSaveHandle(
       setTimeout(() => {
         updateDoc(zero, {
-          id: document.id,
+          id: documentId,
           title: newTitle,
         });
       }, 2000),
@@ -86,7 +90,7 @@ const Editor: React.FC<EditorProps> = ({
           </button>
 
           <div className="flex items-center space-x-2">
-            <span className="text-2xl">{document.emoji || '📄'}</span>
+            <span className="text-2xl">{document?.emoji || '📄'}</span>
             <div>
               <input
                 type="text"
@@ -94,12 +98,12 @@ const Editor: React.FC<EditorProps> = ({
                 onChange={e => handleTitleChange(e.target.value)}
                 className="w-fit text-lg font-semibold bg-transparent border-none outline-none focus:bg-gray-50 px-2 py-1 rounded"
                 placeholder="Untitled"
-                style={{width: `${title.length}ch`}}
+                style={{width: `${title.length}ch`, minWidth: '40ch'}}
               />
               <div className="flex items-center space-x-2 text-xs text-gray-500 px-2">
                 <span>
                   Last edited{' '}
-                  {new Date(document.modified ?? 0).toLocaleDateString()}
+                  {new Date(document?.modified ?? 0).toLocaleDateString()}
                 </span>
                 {!isSaved && (
                   <span className="flex items-center space-x-1">

@@ -14,7 +14,7 @@ export const createDoc = mutator(
       emoji?: string;
     },
   ) => {
-    tx.mutate.document.insert({
+    await tx.mutate.document.insert({
       id: doc.id,
       ownerId: doc.ownerId,
       workspaceId: doc.workspaceId,
@@ -36,7 +36,7 @@ export const createDocBody = mutator(
       content?: string;
     },
   ) => {
-    tx.mutate.documentBody.insert({
+    await tx.mutate.documentBody.insert({
       documentId: docBody.documentId,
       content: docBody.content ?? '',
     });
@@ -54,7 +54,7 @@ export const updateDoc = mutator(
       visibility?: 'private' | 'public' | 'members';
     },
   ) => {
-    tx.mutate.document.update({
+    await tx.mutate.document.update({
       ...doc,
       modified: Date.now(),
     });
@@ -74,6 +74,6 @@ export const updateDocBody = mutator(
       content: string;
     },
   ) => {
-    tx.mutate.documentBody.update(docBody);
+    await tx.mutate.documentBody.update(docBody);
   },
 );
