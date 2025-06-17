@@ -49,6 +49,7 @@ function App({
             documentId={selectedDocumentId}
             onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
             sidebarOpen={sidebarOpen}
+            user={currentUser}
           />
         ) : (
           <div className="flex items-center justify-center h-full">

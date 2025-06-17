@@ -2,65 +2,30 @@
 @tailwind components;
 @tailwind utilities;
 
-/* @layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-white text-gray-900 font-sans;
-  }
-} */
-
-/* @layer components {
-  .milkdown {
-    @apply outline-none;
-  }
-  
-  .milkdown .editor {
-    @apply outline-none;
-  }
-  
-  .milkdown .ProseMirror {
-    @apply outline-none px-6 py-4;
-  }
-  
-  .milkdown h1 {
-    @apply text-3xl font-bold mb-4 mt-6;
-  }
-  
-  .milkdown h2 {
-    @apply text-2xl font-bold mb-3 mt-5;
-  }
-  
-  .milkdown h3 {
-    @apply text-xl font-bold mb-2 mt-4;
-  }
-  
-  .milkdown p {
-    @apply mb-3 leading-relaxed;
-  }
-  
-  .milkdown ul, .milkdown ol {
-    @apply mb-3 pl-6;
-  }
-  
-  .milkdown li {
-    @apply mb-1;
-  }
-  
-  .milkdown blockquote {
-    @apply border-l-4 border-gray-300 pl-4 italic my-4;
-  }
-  
-  .milkdown code {
-    @apply bg-gray-100 px-2 py-1 rounded text-sm font-mono;
-  }
-  
-  .milkdown pre {
-    @apply bg-gray-100 p-4 rounded overflow-x-auto my-4;
-  }
-  
-  .milkdown pre code {
-    @apply bg-transparent p-0;
-  }
-} */
+.ProseMirror-yjs-cursor {
+  position: relative;
+  margin-left: -1px;
+  margin-right: -1px;
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+  border-color: orange;
+  word-break: normal;
+  pointer-events: none;
+}
+/* This renders the username above the caret */
+.ProseMirror-yjs-cursor > div {
+  position: absolute;
+  top: -1.05em;
+  left: -1px;
+  font-size: 13px;
+  background-color: rgb(250, 129, 0);
+  font-family: serif;
+  font-style: normal;
+  font-weight: normal;
+  line-height: normal;
+  user-select: none;
+  color: white;
+  padding-left: 2px;
+  padding-right: 2px;
+  white-space: nowrap;
+}
