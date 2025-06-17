@@ -4,10 +4,18 @@ import {Milkdown, MilkdownProvider, useEditor} from '@milkdown/react';
 import '@milkdown/crepe/theme/common/style.css';
 import '@milkdown/crepe/theme/frame.css';
 
-const CrepeEditor: React.FC<{content: string}> = ({content}) => {
+const CrepeEditor: React.FC<{
+  content: string;
+  onMarkdown: (md: string) => void;
+}> = ({content, onMarkdown}) => {
   const {get} = useEditor(
     root => {
-      return new Crepe({root, defaultValue: content});
+      const ret = new Crepe({root, defaultValue: content});
+      ret.on(listener => {
+        // TODO: update to surgical update events instead.
+        listener.markdownUpdated((_ctx, md) => onMarkdown(md));
+      });
+      return ret;
     },
     [content],
   );
@@ -21,7 +29,7 @@ export const MilkdownEditor: React.FC<{
 }> = ({content, handleContentChange}) => {
   return (
     <MilkdownProvider>
-      <CrepeEditor content={content} />
+      <CrepeEditor content={content} onMarkdown={handleContentChange} />
     </MilkdownProvider>
   );
 };

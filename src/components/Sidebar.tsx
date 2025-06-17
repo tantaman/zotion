@@ -1,6 +1,9 @@
 import React, {useState} from 'react';
 import {FileText, Plus, Search, Settings, X} from 'lucide-react';
-import {DocId, Document, User as UserType} from '../../zero/schema';
+import {DocId, Document, User as UserType, Workspace} from '../../zero/schema';
+import {createDoc} from '../../zero/mutators';
+import {useZero} from '@rocicorp/zero/react';
+import {nanoid} from 'nanoid';
 
 interface SidebarProps {
   documents: Document[];
@@ -9,6 +12,7 @@ interface SidebarProps {
   isOpen: boolean;
   onToggle: () => void;
   currentUser: UserType;
+  currentWorkspace: Workspace;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -18,7 +22,9 @@ const Sidebar: React.FC<SidebarProps> = ({
   isOpen,
   onToggle,
   currentUser,
+  currentWorkspace,
 }) => {
+  const zero = useZero();
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedSections, setExpandedSections] = useState<Set<string>>(
     new Set(['documents']),
@@ -37,6 +43,18 @@ const Sidebar: React.FC<SidebarProps> = ({
     }
     setExpandedSections(newExpanded);
   };
+
+  // CUT: it would be ideal to have local ephemeral state to draft the document into before
+  // persisting.
+  function createDocument() {
+    createDoc(zero, {
+      id: nanoid(),
+      ownerId: currentUser.id,
+      workspaceId: currentWorkspace.id,
+      title: 'Untitled',
+      emoji: '❓',
+    });
+  }
 
   return (
     <>
@@ -93,7 +111,9 @@ const Sidebar: React.FC<SidebarProps> = ({
           <div className="mb-6">
             <button className="w-full flex items-center space-x-2 px-3 py-2 text-left hover:bg-notion-gray-200 rounded-lg transition-colors">
               <Plus className="w-4 h-4" />
-              <span className="text-sm font-medium">New Document</span>
+              <span className="text-sm font-medium" onClick={createDocument}>
+                New Document
+              </span>
             </button>
           </div>
 

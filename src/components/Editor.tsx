@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {Menu, Share, MoreHorizontal, Star} from 'lucide-react';
 import {MilkdownEditor} from './MilkdownEditor';
 import {DocId} from '../../zero/schema';
@@ -12,6 +12,8 @@ interface EditorProps {
   onToggleSidebar: () => void;
   sidebarOpen: boolean;
 }
+
+const SAVE_INTERVAL = 1000;
 
 const Editor: React.FC<EditorProps> = ({
   documentId,
@@ -27,54 +29,49 @@ const Editor: React.FC<EditorProps> = ({
   // CUT: this filter to keep last state is annoying in order to prevent a flicker.
   // A cache is also possible but we don't want to keep the query open, just delay removing the current content
   // until the new content is ready.
+  // CUT: if the value is truly undefined this trick will not work. E.g., a body not yet created for the doc metadata.
   const [content, setContent, contentDirty] = useCachedProp(
-    body?.content ?? '',
-    v => !!v,
+    body?.content,
+    v => v !== undefined,
   );
   const [title, setTitle, titleDirty] = useCachedProp(
-    document?.title ?? '',
-    v => !!v,
+    document?.title,
+    v => v !== undefined,
   );
   const isSaved = !contentDirty && !titleDirty;
-  const [contentSaveHandle, setContentSaveHandle] = useState<ReturnType<
-    typeof setTimeout
-  > | null>(null);
-  const [titleSaveHandle, setTitleSaveHandle] = useState<ReturnType<
-    typeof setTimeout
-  > | null>(null);
+  const titleSaveRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const contentSaveRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleContentChange = (newContent: string) => {
     setContent(newContent);
 
-    if (contentSaveHandle != null) {
-      clearTimeout(contentSaveHandle);
+    if (contentSaveRef.current !== null) {
+      clearTimeout(contentSaveRef.current);
     }
+    const handle = setTimeout(() => {
+      updateDocBody(zero, {
+        documentId: documentId,
+        content: newContent,
+      });
+    }, SAVE_INTERVAL);
 
-    setContentSaveHandle(
-      setTimeout(() => {
-        updateDocBody(zero, {
-          documentId: documentId,
-          content: newContent,
-        });
-      }, 2000),
-    );
+    contentSaveRef.current = handle;
   };
 
   const handleTitleChange = (newTitle: string) => {
     setTitle(newTitle);
-
-    if (titleSaveHandle != null) {
-      clearTimeout(titleSaveHandle);
+    if (titleSaveRef.current != null) {
+      clearTimeout(titleSaveRef.current);
     }
 
-    setTitleSaveHandle(
-      setTimeout(() => {
-        updateDoc(zero, {
-          id: documentId,
-          title: newTitle,
-        });
-      }, 2000),
-    );
+    const handle = setTimeout(() => {
+      updateDoc(zero, {
+        id: documentId,
+        title: newTitle,
+      });
+    }, SAVE_INTERVAL);
+
+    titleSaveRef.current = handle;
   };
 
   return (
@@ -98,7 +95,7 @@ const Editor: React.FC<EditorProps> = ({
                 onChange={e => handleTitleChange(e.target.value)}
                 className="w-fit text-lg font-semibold bg-transparent border-none outline-none focus:bg-gray-50 px-2 py-1 rounded"
                 placeholder="Untitled"
-                style={{width: `${title.length}ch`, minWidth: '40ch'}}
+                style={{width: `${(title ?? '').length}ch`, minWidth: '40ch'}}
               />
               <div className="flex items-center space-x-2 text-xs text-gray-500 px-2">
                 <span>
@@ -140,7 +137,7 @@ const Editor: React.FC<EditorProps> = ({
         2. Remote edits should result in surgical changes
         */}
         <MilkdownEditor
-          content={body?.content ?? content}
+          content={body?.content ?? content ?? ''}
           handleContentChange={handleContentChange}
         />
       </div>

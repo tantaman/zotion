@@ -24,6 +24,10 @@ export const createDoc = mutator(
       emoji: doc.emoji,
       visibility: 'private',
     });
+    await tx.mutate.documentBody.insert({
+      documentId: doc.id,
+      content: '',
+    });
   },
 );
 

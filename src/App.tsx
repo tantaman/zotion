@@ -2,8 +2,8 @@ import {useState} from 'react';
 import Sidebar from './components/Sidebar';
 import Editor from './components/Editor';
 import {useQuery} from '@rocicorp/zero/react';
-import {allDocTitles, user} from '../zero/queries';
-import {DocId, Document, UserId, WorkspaceId} from '../zero/schema';
+import {allDocTitles, user, workspace} from '../zero/queries';
+import {DocId, UserId, WorkspaceId} from '../zero/schema';
 
 function App({
   workspaceId,
@@ -14,6 +14,7 @@ function App({
 }) {
   const [documents] = useQuery(allDocTitles(workspaceId));
   const [currentUser] = useQuery(user(userId), userId != null);
+  const [currentWorkspace] = useQuery(workspace(workspaceId));
   // CUT: this is a problem for managing selected document state since the
   // content of the doc can change. E.g., title changes and this object is wrong.
   // That will not update the doc saved off into state here.
@@ -23,7 +24,7 @@ function App({
   );
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
-  if (!currentUser) {
+  if (!currentUser || !currentWorkspace) {
     return null;
   }
 
@@ -36,6 +37,7 @@ function App({
         isOpen={sidebarOpen}
         onToggle={() => setSidebarOpen(!sidebarOpen)}
         currentUser={currentUser}
+        currentWorkspace={currentWorkspace}
       />
       <main
         className={`flex-1 transition-all duration-300 ${

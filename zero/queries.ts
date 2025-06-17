@@ -15,6 +15,10 @@ export const user = namedQuery('user', (userId: UserId) =>
   builder.user.where('id', userId).one(),
 );
 
+export const workspace = namedQuery('workspace', (workspaceId: WorkspaceId) =>
+  builder.workspace.where('id', workspaceId).one(),
+);
+
 export const docBody = namedQuery('docBody', (docId: DocId) =>
   builder.documentBody.where('documentId', docId).one(),
 );
