@@ -1,4 +1,10 @@
-import {eventHandler, getQuery, readBody} from 'vinxi/http';
+import {
+  createError,
+  eventHandler,
+  getHeaders,
+  getQuery,
+  readBody,
+} from 'vinxi/http';
 import {NodePgClient} from 'drizzle-orm/node-postgres';
 import {
   ZQLDatabase,
@@ -10,6 +16,7 @@ import {
 import {schema} from '../../zero/schema.gen';
 import * as mutators from '../../zero/mutators';
 import {db} from '../db/db';
+import {auth} from '../auth';
 
 const client = db.$client;
 
@@ -57,6 +64,37 @@ const processor = new PushProcessor(
 export default eventHandler(async event => {
   const query = getQuery(event);
   const body = await readBody(event);
+  const session = await auth.api.getSession({
+    headers: event.headers,
+  });
+
+  console.log('PUSH SESSION', session);
+  if (!session) {
+    throw createError({
+      statusCode: 401,
+      statusMessage: 'Unauthorized',
+    });
+  }
+
+  // TODO: I think this would be better
+  // if we looked up the mutator(s) ourselves as we do
+  // with custom queries.
+  // Then call `z.transact(mutator)` to run it
+  // this way we can pass extra args without constructing
+  // all mutators
+  // Would look like:
+  // serverMutator(z);
+  // function serverMutator(z) {
+  //    outside tx code
+  //    z.transact(sharedMutator);
+  // }
+  // TODO: we also need adapters for each thing
+  // - drizzle
+  // - kysely
+  // - prisma
+  // - node-pg
+  // - postgres
+  // So users do not have to wrap all their own
 
   return await processor.process(
     mutators,
