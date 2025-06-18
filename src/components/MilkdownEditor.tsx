@@ -33,7 +33,9 @@ const CrepeEditor: React.FC<{
       ret.editor.use(collab);
       const doc = new Doc();
       const wsProvider = new WebsocketProvider(
-        getEnv('VITE_PUBLIC_Y_SERVER'),
+        (location.protocol === 'http:' ? 'ws://' : 'wss://') +
+          location.host +
+          '/yjs',
         docId,
         doc,
       );

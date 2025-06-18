@@ -26,6 +26,7 @@
   "include": [
     "src",
     "app.config.ts",
+    "proxy.ts",
     "tailwind.config.js",
     "postcss.config.js",
     "scripts",
