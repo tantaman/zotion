@@ -24,7 +24,7 @@ export default eventHandler(async event => {
     'transformed',
     transformRequest[1].map(req => {
       const name = req.name;
-      if (!isSharedQuery(name)) {
+      if (!isQuery(name)) {
         throw new Error(`Unknown query: ${name}`);
       }
 
@@ -37,6 +37,6 @@ export default eventHandler(async event => {
   ];
 });
 
-function isSharedQuery(key: string): key is keyof typeof queries {
+function isQuery(key: string): key is keyof typeof queries {
   return key in queries;
 }
