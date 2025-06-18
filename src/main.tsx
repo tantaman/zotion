@@ -6,11 +6,10 @@ import {schema, id_of} from '../zero/schema';
 import {Zero} from '@rocicorp/zero';
 import {ZeroProvider} from '@rocicorp/zero/react';
 import * as mutators from '../zero/mutators';
-import {getEnv} from './meta-env';
 
 const zero = new Zero({
   logLevel: 'info',
-  server: getEnv('VITE_PUBLIC_SERVER'),
+  server: window.location.protocol + '//' + window.location.host,
   userID: '1',
   schema,
   mutators,

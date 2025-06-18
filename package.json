@@ -10,6 +10,7 @@
     "dev:yjs": "HOST=localhost PORT=1234 npx y-websocket",
     "dev:ui": "tsx scripts/dev-ui.ts",
     "dev:clean": "tsx scripts/clean.ts",
+    "dev:proxy": "tsx proxy.ts",
     "gen-schema": "drizzle-zero generate -s ./server/db/schema.ts --format -o ./zero/schema.gen.ts",
     "build": "vinxi build",
     "start": "vinxi start",
@@ -31,6 +32,8 @@
     "dotenv-expand": "^12.0.2",
     "drizzle-orm": "^0.44.2",
     "drizzle-zero": "^0.10.8",
+    "express": "^5.1.0",
+    "http-proxy-middleware": "^3.0.5",
     "lucide-react": "^0.263.1",
     "nanoid": "^5.1.5",
     "pg": "^8.16.0",
@@ -41,6 +44,7 @@
     "yjs": "^13.6.27"
   },
   "devDependencies": {
+    "@types/express": "^5.0.3",
     "@types/pg": "^8.15.4",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
