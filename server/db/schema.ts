@@ -28,7 +28,7 @@ export const user = pgTable('user', {
   id: text('id').$type<UserId>().primaryKey(),
   name: text('name').notNull(),
   email: text('email').notNull().unique(),
-  emoji: text('emoji').notNull(),
+  emoji: text('emoji').$defaultFn(() => '👤'),
   emailVerified: boolean('email_verified')
     .$defaultFn(() => false)
     .notNull(),

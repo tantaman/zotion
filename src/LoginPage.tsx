@@ -1,6 +1,32 @@
+import {useState} from 'react';
+import {signIn} from './auth/authClient';
+
 export default function LoginPage() {
+  const [error, setError] = useState<string>();
+  const [loggingIn, setLoggingIn] = useState(false);
+  async function login() {
+    if (loggingIn) {
+      return;
+    }
+    setLoggingIn(true);
+    setError(undefined);
+
+    const response = await signIn.social({
+      provider: 'github',
+    });
+
+    if (response.error) {
+      setLoggingIn(false);
+      setError(response.error.message ?? response.error.statusText);
+      console.error(response.error);
+      return;
+    }
+    console.log(response);
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-white">
+      {error}
       <div className="max-w-md w-full space-y-8 p-8">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
@@ -12,6 +38,7 @@ export default function LoginPage() {
         </div>
         <div className="mt-8 space-y-6">
           <button
+            disabled={loggingIn}
             onClick={() => login()}
             className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
           >

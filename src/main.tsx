@@ -1,24 +1,23 @@
-import React from 'react';
+import React, {useCallback, useSyncExternalStore} from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App';
 import './index.css';
-import {schema, id_of} from '../zero/schema';
-import {Zero} from '@rocicorp/zero';
-import {ZeroProvider} from '@rocicorp/zero/react';
-import * as mutators from '../zero/mutators';
-
-const zero = new Zero({
-  logLevel: 'info',
-  server: window.location.protocol + '//' + window.location.host,
-  userID: '1',
-  schema,
-  mutators,
-});
+import {authAtom} from './zero-setup';
+import LoginPage from './LoginPage';
+import {LoggedIn} from './LoggedIn';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <ZeroProvider zero={zero}>
-      <App workspaceId={id_of('1')} userId={id_of('1')} />
-    </ZeroProvider>
+    <Branch />
   </React.StrictMode>,
 );
+
+function Branch() {
+  const auth = useSyncExternalStore(
+    authAtom.onChange,
+    useCallback(() => authAtom.value, []),
+  );
+  if (!auth) {
+    return <LoginPage />;
+  }
+  return <LoggedIn userId={auth.id} />;
+}
