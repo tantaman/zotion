@@ -18,7 +18,7 @@ const zero = new Zero({
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ZeroProvider zero={zero}>
-      <App workspaceId={id_of<'Workspace'>('1')} userId={id_of<'User'>('1')} />
+      <App workspaceId={id_of('1')} userId={id_of('1')} />
     </ZeroProvider>
   </React.StrictMode>,
 );
