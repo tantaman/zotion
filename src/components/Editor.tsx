@@ -55,7 +55,7 @@ const Editor: React.FC<EditorProps> = ({
         <div className="flex items-center space-x-4">
           <button
             onClick={onToggleSidebar}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors lg:hidden"
+            className={`p-2 hover:bg-gray-100 rounded-lg transition-colors ${sidebarOpen ? 'lg:hidden' : ''}`}
           >
             <Menu className="w-5 h-5" />
           </button>
@@ -103,7 +103,7 @@ const Editor: React.FC<EditorProps> = ({
       </header>
 
       {/* Editor */}
-      <div className="flex-1 overflow-hidden">
+      <div className="flex-1 overflow-scroll">
         {/* CUT: Content set to content from the db so we only refresh the markdown on db content change.
         This is still ass since it requires re-creating the entire doc on any event coming out of the db.
         We need a different way to sync collaborative text.
