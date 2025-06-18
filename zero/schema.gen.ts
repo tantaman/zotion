@@ -26,6 +26,139 @@ type ZeroSchema = DrizzleToZeroSchema<typeof drizzleSchema>;
  */
 export const schema = {
   tables: {
+    account: {
+      name: "account",
+      columns: {
+        id: {
+          type: "string",
+          optional: false,
+          customType: null as unknown as ZeroCustomType<
+            ZeroSchema,
+            "account",
+            "id"
+          >,
+        },
+        accountId: {
+          type: "string",
+          optional: false,
+          customType: null as unknown as ZeroCustomType<
+            ZeroSchema,
+            "account",
+            "accountId"
+          >,
+          serverName: "account_id",
+        },
+        providerId: {
+          type: "string",
+          optional: false,
+          customType: null as unknown as ZeroCustomType<
+            ZeroSchema,
+            "account",
+            "providerId"
+          >,
+          serverName: "provider_id",
+        },
+        userId: {
+          type: "string",
+          optional: false,
+          customType: null as unknown as ZeroCustomType<
+            ZeroSchema,
+            "account",
+            "userId"
+          >,
+          serverName: "user_id",
+        },
+        accessToken: {
+          type: "string",
+          optional: true,
+          customType: null as unknown as ZeroCustomType<
+            ZeroSchema,
+            "account",
+            "accessToken"
+          >,
+          serverName: "access_token",
+        },
+        refreshToken: {
+          type: "string",
+          optional: true,
+          customType: null as unknown as ZeroCustomType<
+            ZeroSchema,
+            "account",
+            "refreshToken"
+          >,
+          serverName: "refresh_token",
+        },
+        idToken: {
+          type: "string",
+          optional: true,
+          customType: null as unknown as ZeroCustomType<
+            ZeroSchema,
+            "account",
+            "idToken"
+          >,
+          serverName: "id_token",
+        },
+        accessTokenExpiresAt: {
+          type: "number",
+          optional: true,
+          customType: null as unknown as ZeroCustomType<
+            ZeroSchema,
+            "account",
+            "accessTokenExpiresAt"
+          >,
+          serverName: "access_token_expires_at",
+        },
+        refreshTokenExpiresAt: {
+          type: "number",
+          optional: true,
+          customType: null as unknown as ZeroCustomType<
+            ZeroSchema,
+            "account",
+            "refreshTokenExpiresAt"
+          >,
+          serverName: "refresh_token_expires_at",
+        },
+        scope: {
+          type: "string",
+          optional: true,
+          customType: null as unknown as ZeroCustomType<
+            ZeroSchema,
+            "account",
+            "scope"
+          >,
+        },
+        password: {
+          type: "string",
+          optional: true,
+          customType: null as unknown as ZeroCustomType<
+            ZeroSchema,
+            "account",
+            "password"
+          >,
+        },
+        createdAt: {
+          type: "number",
+          optional: false,
+          customType: null as unknown as ZeroCustomType<
+            ZeroSchema,
+            "account",
+            "createdAt"
+          >,
+          serverName: "created_at",
+        },
+        updatedAt: {
+          type: "number",
+          optional: false,
+          customType: null as unknown as ZeroCustomType<
+            ZeroSchema,
+            "account",
+            "updatedAt"
+          >,
+          serverName: "updated_at",
+        },
+      },
+      primaryKey: ["id"],
+    },
     document: {
       name: "document",
       columns: {
@@ -132,6 +265,90 @@ export const schema = {
       primaryKey: ["documentId"],
       serverName: "document_body",
     },
+    session: {
+      name: "session",
+      columns: {
+        id: {
+          type: "string",
+          optional: false,
+          customType: null as unknown as ZeroCustomType<
+            ZeroSchema,
+            "session",
+            "id"
+          >,
+        },
+        expiresAt: {
+          type: "number",
+          optional: false,
+          customType: null as unknown as ZeroCustomType<
+            ZeroSchema,
+            "session",
+            "expiresAt"
+          >,
+          serverName: "expires_at",
+        },
+        token: {
+          type: "string",
+          optional: false,
+          customType: null as unknown as ZeroCustomType<
+            ZeroSchema,
+            "session",
+            "token"
+          >,
+        },
+        createdAt: {
+          type: "number",
+          optional: false,
+          customType: null as unknown as ZeroCustomType<
+            ZeroSchema,
+            "session",
+            "createdAt"
+          >,
+          serverName: "created_at",
+        },
+        updatedAt: {
+          type: "number",
+          optional: false,
+          customType: null as unknown as ZeroCustomType<
+            ZeroSchema,
+            "session",
+            "updatedAt"
+          >,
+          serverName: "updated_at",
+        },
+        ipAddress: {
+          type: "string",
+          optional: true,
+          customType: null as unknown as ZeroCustomType<
+            ZeroSchema,
+            "session",
+            "ipAddress"
+          >,
+          serverName: "ip_address",
+        },
+        userAgent: {
+          type: "string",
+          optional: true,
+          customType: null as unknown as ZeroCustomType<
+            ZeroSchema,
+            "session",
+            "userAgent"
+          >,
+          serverName: "user_agent",
+        },
+        userId: {
+          type: "string",
+          optional: false,
+          customType: null as unknown as ZeroCustomType<
+            ZeroSchema,
+            "session",
+            "userId"
+          >,
+          serverName: "user_id",
+        },
+      },
+      primaryKey: ["id"],
+    },
     user: {
       name: "user",
       columns: {
@@ -171,15 +388,107 @@ export const schema = {
             "emoji"
           >,
         },
-        avatarUrl: {
+        emailVerified: {
+          type: "boolean",
+          optional: false,
+          customType: null as unknown as ZeroCustomType<
+            ZeroSchema,
+            "user",
+            "emailVerified"
+          >,
+          serverName: "email_verified",
+        },
+        image: {
           type: "string",
           optional: true,
           customType: null as unknown as ZeroCustomType<
             ZeroSchema,
             "user",
-            "avatarUrl"
+            "image"
           >,
-          serverName: "avatar_url",
+        },
+        createdAt: {
+          type: "number",
+          optional: false,
+          customType: null as unknown as ZeroCustomType<
+            ZeroSchema,
+            "user",
+            "createdAt"
+          >,
+          serverName: "created_at",
+        },
+        updatedAt: {
+          type: "number",
+          optional: false,
+          customType: null as unknown as ZeroCustomType<
+            ZeroSchema,
+            "user",
+            "updatedAt"
+          >,
+          serverName: "updated_at",
+        },
+      },
+      primaryKey: ["id"],
+    },
+    verification: {
+      name: "verification",
+      columns: {
+        id: {
+          type: "string",
+          optional: false,
+          customType: null as unknown as ZeroCustomType<
+            ZeroSchema,
+            "verification",
+            "id"
+          >,
+        },
+        identifier: {
+          type: "string",
+          optional: false,
+          customType: null as unknown as ZeroCustomType<
+            ZeroSchema,
+            "verification",
+            "identifier"
+          >,
+        },
+        value: {
+          type: "string",
+          optional: false,
+          customType: null as unknown as ZeroCustomType<
+            ZeroSchema,
+            "verification",
+            "value"
+          >,
+        },
+        expiresAt: {
+          type: "number",
+          optional: false,
+          customType: null as unknown as ZeroCustomType<
+            ZeroSchema,
+            "verification",
+            "expiresAt"
+          >,
+          serverName: "expires_at",
+        },
+        createdAt: {
+          type: "number",
+          optional: true,
+          customType: null as unknown as ZeroCustomType<
+            ZeroSchema,
+            "verification",
+            "createdAt"
+          >,
+          serverName: "created_at",
+        },
+        updatedAt: {
+          type: "number",
+          optional: true,
+          customType: null as unknown as ZeroCustomType<
+            ZeroSchema,
+            "verification",
+            "updatedAt"
+          >,
+          serverName: "updated_at",
         },
       },
       primaryKey: ["id"],

@@ -1,7 +1,5 @@
 import {eventHandler, getQuery, readBody} from 'vinxi/http';
-import '../shared/env';
-import {drizzle, NodePgClient} from 'drizzle-orm/node-postgres';
-
+import {NodePgClient} from 'drizzle-orm/node-postgres';
 import {
   ZQLDatabase,
   PushProcessor,
@@ -9,10 +7,10 @@ import {
   Row,
   DBTransaction,
 } from '@rocicorp/zero/pg';
-import {schema} from '../zero/schema.gen';
-import * as mutators from '../zero/mutators';
+import {schema} from '../../zero/schema.gen';
+import * as mutators from '../../zero/mutators';
+import {db} from '../db/db';
 
-const db = drizzle(process.env.PG_URL!);
 const client = db.$client;
 
 // CUT: this is annoying. How can we make this easier?

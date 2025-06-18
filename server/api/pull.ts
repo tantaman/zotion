@@ -1,8 +1,8 @@
 import {eventHandler, readBody} from 'vinxi/http';
-import '../shared/env';
+import '../../shared/env';
 import {NamedQuery, TransformRequestMessage, ast} from '@rocicorp/zero';
-import * as queries from '../zero/queries';
-import {schema} from '../zero/schema.gen';
+import * as queries from '../../zero/queries';
+import {schema} from '../../zero/schema.gen';
 
 export default eventHandler(async event => {
   const transformRequest: TransformRequestMessage = await readBody(event);
