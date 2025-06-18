@@ -1,17 +1,12 @@
-import {
-  createError,
-  eventHandler,
-  getHeaders,
-  getQuery,
-  readBody,
-} from 'vinxi/http';
+import {createError, eventHandler, toWebRequest} from 'vinxi/http';
 import {NodePgClient} from 'drizzle-orm/node-postgres';
 import {
   ZQLDatabase,
-  PushProcessor,
   DBConnection,
   Row,
   DBTransaction,
+  handleMutations,
+  CustomMutatorImpl,
 } from '@rocicorp/zero/pg';
 import {schema} from '../../zero/schema.gen';
 import * as mutators from '../../zero/mutators';
@@ -56,19 +51,13 @@ class DrizzleTransaction implements DBTransaction<NodePgClient> {
   }
 }
 
-const processor = new PushProcessor(
-  new ZQLDatabase(new DrizzleConnection(), schema),
-  'debug',
-);
+const dbProvider = new ZQLDatabase(new DrizzleConnection(), schema);
 
 export default eventHandler(async event => {
-  const query = getQuery(event);
-  const body = await readBody(event);
   const session = await auth.api.getSession({
     headers: event.headers,
   });
 
-  console.log('PUSH SESSION', session);
   if (!session) {
     throw createError({
       statusCode: 401,
@@ -76,34 +65,31 @@ export default eventHandler(async event => {
     });
   }
 
-  // TODO: I think this would be better
-  // if we looked up the mutator(s) ourselves as we do
-  // with custom queries.
-  // Then call `z.transact(mutator)` to run it
-  // this way we can pass extra args without constructing
-  // all mutators
-  // Would look like:
-  // serverMutator(z);
-  // function serverMutator(z) {
-  //    outside tx code
-  //    z.transact(sharedMutator);
-  // }
-  // TODO: we also need adapters for each thing
-  // - drizzle
-  // - kysely
-  // - prisma
-  // - node-pg
-  // - postgres
-  // So users do not have to wrap all their own
+  return await handleMutations(
+    async (transact, mutation) => {
+      // Do pre-transaction stuff
 
-  return await processor.process(
-    mutators,
-    // CUT: technically our query record type should be wider to allow arrays of values
-    /*
-    type QueryValue = string | number | undefined | null | boolean | Array<QueryValue> | Record<string, any>;
-    type QueryObject = Record<string, QueryValue | QueryValue[]>;
-    */
-    query as Record<string, string>,
-    body,
+      // Run the mutator
+      const ret = await transact(
+        dbProvider,
+        mutation,
+        async (tx, name, args) => {
+          if (!isMutator(name)) {
+            throw new Error(`Unknown mutator: ${name}`);
+          }
+          await (mutators[name] as CustomMutatorImpl<any>)(tx, args);
+        },
+      );
+
+      // Do post-transaction stuff
+
+      return ret;
+    },
+    toWebRequest(event),
+    'debug',
   );
 });
+
+function isMutator(key: string): key is keyof typeof mutators {
+  return key in mutators;
+}
