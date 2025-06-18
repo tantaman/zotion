@@ -22,6 +22,7 @@ if (session) {
 }
 
 authAtom.onChange(auth => {
+  zeroAtom.value?.close();
   zeroAtom.value = new Zero({
     logLevel: 'info',
     server: window.location.protocol + '//' + window.location.host,
