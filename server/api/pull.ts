@@ -10,7 +10,6 @@ export default eventHandler(async event => {
     headers: event.headers,
   });
 
-  console.log('PULL SESSION', session);
   if (!session) {
     throw createError({
       statusCode: 401,
