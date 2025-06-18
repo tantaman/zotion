@@ -31,7 +31,7 @@ export type WorkspaceId = ID_of<'Workspace'>;
 export type UserId = ID_of<'User'>;
 type Entity = 'Doc' | 'Workspace' | 'User';
 
-export function id_of<E extends Entity>(id: string): ID_of<E> {
+export function id<E extends Entity>(id: string): ID_of<E> {
   return id as ID_of<E>;
 }
 
