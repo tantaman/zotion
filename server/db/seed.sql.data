@@ -1,8 +1,8 @@
 INSERT INTO "workspace" (id, name) VALUES ('1', 'Rocicorp') ON CONFLICT (id) DO NOTHING;
 
-INSERT INTO "user" ("id", "name", "email", "emoji") VALUES
-  ('1', 'John Doe', 'john@example.com', '👨‍💻'),
-  ('2', 'Jane Smith', 'jane@example.com', '👩‍🎨')
+INSERT INTO "user" ("id", "name", "email", "emoji", "email_verified", "created_at", "updated_at") VALUES
+  ('1', 'John Doe', 'john@example.com', '👨‍💻', true, NOW(), NOW()),
+  ('2', 'Jane Smith', 'jane@example.com', '👩‍🎨', true, NOW(), NOW())
 ON CONFLICT (id) DO NOTHING;
 
 INSERT INTO "document" ("id", "owner_id", "workspace_id", "visibility", "title", "created", "modified", "emoji") VALUES
